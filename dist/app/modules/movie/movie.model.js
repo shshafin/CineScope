@@ -59,4 +59,16 @@ exports.movieSchema.pre("save", function (next) {
         next();
     });
 });
+exports.movieSchema.pre("find", function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        this.find({ isDeleted: { $ne: true } });
+        next();
+    });
+});
+exports.movieSchema.pre("findOne", function (next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        this.findOne({ isDeleted: { $ne: true } });
+        next();
+    });
+});
 exports.Movie = mongoose_1.default.model("Movie", exports.movieSchema);

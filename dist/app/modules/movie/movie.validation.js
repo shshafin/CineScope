@@ -16,7 +16,10 @@ const movieValidationSchema = zod_1.z.object({
 const movieUpdateValidationSchema = zod_1.z.object({
     title: zod_1.z.string().optional(),
     description: zod_1.z.string().optional(),
-    releaseDate: zod_1.z.date().optional(),
+    releaseDate: zod_1.z
+        .string()
+        .date("Please provide a valid date in this format yyyy-MM-dd")
+        .optional(),
     genre: zod_1.z.string().optional(),
     isDeleted: zod_1.z.boolean().optional(),
 });

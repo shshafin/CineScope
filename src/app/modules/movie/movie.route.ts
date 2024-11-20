@@ -14,6 +14,12 @@ router.post(
 );
 router.get("/", movieController.getMovie);
 router.get("/:slug", movieController.getSingleMovie);
+router.patch(
+  "/:slug",
+  validateZodRequest(movieValidation.movieUpdateValidationSchema),
+  movieController.updateMovie
+);
+router.delete("/:slug", movieController.deleteMovie);
 
 // review routes
 router.post(

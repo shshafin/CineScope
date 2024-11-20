@@ -32,6 +32,31 @@ const getMovieIntoDB = async (payload: Record<string, unknown>) => {
 // get single movie
 const getSingleMovieIntoDB = async (slug: string) => {
   const result = await Movie.findOne({ slug: slug });
+  if (!result) {
+    throw new Error(
+      "This movie is not available at the moment. Please check back later!"
+    );
+  }
+  return result;
+};
+
+// update movie
+const updateMovieIntoDB = async (slug: string, payload: Partial<TMovie>) => {
+  const result = await Movie.findOneAndUpdate({ slug: slug }, payload, {
+    new: true,
+  });
+  return result;
+};
+
+// delete movie
+const deleteMovieIntoDB = async (slug: string) => {
+  const result = await Movie.findOneAndUpdate(
+    { slug: slug },
+    { isDeleted: true },
+    {
+      new: true,
+    }
+  );
   return result;
 };
 
@@ -39,4 +64,6 @@ export const movieService = {
   createMovieIntoDB,
   getMovieIntoDB,
   getSingleMovieIntoDB,
+  updateMovieIntoDB,
+  deleteMovieIntoDB,
 };

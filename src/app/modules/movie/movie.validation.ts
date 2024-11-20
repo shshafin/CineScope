@@ -15,7 +15,10 @@ const movieValidationSchema = z.object({
 const movieUpdateValidationSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
-  releaseDate: z.date().optional(),
+  releaseDate: z
+    .string()
+    .date("Please provide a valid date in this format yyyy-MM-dd")
+    .optional(),
   genre: z.string().optional(),
   isDeleted: z.boolean().optional(),
 });

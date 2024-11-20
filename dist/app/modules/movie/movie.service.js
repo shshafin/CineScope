@@ -36,10 +36,29 @@ const getMovieIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* 
 // get single movie
 const getSingleMovieIntoDB = (slug) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield movie_model_1.Movie.findOne({ slug: slug });
+    if (!result) {
+        throw new Error("This movie is not available at the moment. Please check back later!");
+    }
+    return result;
+});
+// update movie
+const updateMovieIntoDB = (slug, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield movie_model_1.Movie.findOneAndUpdate({ slug: slug }, payload, {
+        new: true,
+    });
+    return result;
+});
+// delete movie
+const deleteMovieIntoDB = (slug) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield movie_model_1.Movie.findOneAndUpdate({ slug: slug }, { isDeleted: true }, {
+        new: true,
+    });
     return result;
 });
 exports.movieService = {
     createMovieIntoDB,
     getMovieIntoDB,
     getSingleMovieIntoDB,
+    updateMovieIntoDB,
+    deleteMovieIntoDB,
 };

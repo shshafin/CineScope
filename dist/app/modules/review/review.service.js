@@ -24,11 +24,11 @@ const createReviewIntoDB = (slug, reviewData) => __awaiter(void 0, void 0, void 
         const review = yield review_model_1.Review.create([
             Object.assign({ movie: movie._id }, reviewData),
         ], { session });
-        //   total count of reviews
-        const reviewsCount = yield review_model_1.Review.countDocuments({
-            movie: movie._id,
-        }).session(session);
-        yield movie_model_1.Movie.updateOne({ slug }, { totalRating: reviewsCount });
+        // Increment view count
+        yield movie_model_1.Movie.updateOne({ slug }, {
+            $inc: { viewCount: 1 },
+            totalRating: yield review_model_1.Review.countDocuments({ movie: movie._id }).session(session),
+        }, { session });
         yield session.commitTransaction();
         return review[0];
     }
@@ -36,7 +36,9 @@ const createReviewIntoDB = (slug, reviewData) => __awaiter(void 0, void 0, void 
         yield session.abortTransaction();
         throw error;
     }
-    session.endSession();
+    finally {
+        session.endSession();
+    }
 });
 // get review
 const getReviewsIntoDB = (slug) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,28 +67,30 @@ const deleteReviewIntoDB = (slug, id) => __awaiter(void 0, void 0, void 0, funct
     }
     try {
         session.startTransaction();
-        // Find and update the review's isDelete field
-        const result = yield review_model_1.Review.findByIdAndUpdate(id, // Find review by id
-        { isDelete: true }, // Update isDelete to true
-        { new: true, session } // Return the updated document and use the session
-        );
-        // Count the number of non-deleted reviews for the movie
-        yield review_model_1.Review.countDocuments({
-            movie: movie._id,
-            isDelete: false, // Only count reviews that are not marked as deleted
-        }).session(session);
-        const updatedTotalRating = Math.max(0, movie.totalRating - 1);
-        // Update the movie's totalRating field with the new review count
-        yield movie_model_1.Movie.updateOne({ slug }, { totalRating: updatedTotalRating }, // Set totalRating to the new review count
-        { session: session });
+        // Find the review to be deleted
+        const reviewToDelete = yield review_model_1.Review.findById(id);
+        if (!reviewToDelete) {
+            throw new Error("Review not found");
+        }
+        // Soft delete the review
+        const result = yield review_model_1.Review.findByIdAndUpdate(id, { isDelete: true }, { new: true, session });
+        // Update the movie's totalRating and viewCount
+        yield movie_model_1.Movie.updateOne({ slug }, {
+            $inc: {
+                viewCount: -1,
+                totalRating: -1, // Decrease total rating by 1
+            },
+        }, { session: session });
         yield session.commitTransaction();
         return result;
     }
     catch (error) {
-        console.log(error);
         yield session.abortTransaction();
+        throw error;
     }
-    session.endSession();
+    finally {
+        session.endSession();
+    }
 });
 exports.reviewService = {
     createReviewIntoDB,

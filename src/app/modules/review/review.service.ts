@@ -27,11 +27,17 @@ const createReviewIntoDB = async (
       { session }
     );
 
-    //   total count of reviews
-    const reviewsCount = await Review.countDocuments({
-      movie: movie._id,
-    }).session(session);
-    await Movie.updateOne({ slug }, { totalRating: reviewsCount });
+    // Increment view count
+    await Movie.updateOne(
+      { slug },
+      {
+        $inc: { viewCount: 1 },
+        totalRating: await Review.countDocuments({ movie: movie._id }).session(
+          session
+        ),
+      },
+      { session }
+    );
 
     await session.commitTransaction();
 
@@ -39,8 +45,9 @@ const createReviewIntoDB = async (
   } catch (error) {
     await session.abortTransaction();
     throw error;
+  } finally {
+    session.endSession();
   }
-  session.endSession();
 };
 
 // get review
@@ -82,24 +89,28 @@ const deleteReviewIntoDB = async (slug: string, id: string) => {
   try {
     session.startTransaction();
 
-    // Find and update the review's isDelete field
+    // Find the review to be deleted
+    const reviewToDelete = await Review.findById(id);
+    if (!reviewToDelete) {
+      throw new Error("Review not found");
+    }
+
+    // Soft delete the review
     const result = await Review.findByIdAndUpdate(
-      id, // Find review by id
-      { isDelete: true }, // Update isDelete to true
-      { new: true, session } // Return the updated document and use the session
+      id,
+      { isDelete: true },
+      { new: true, session }
     );
 
-    // Count the number of non-deleted reviews for the movie
-    await Review.countDocuments({
-      movie: movie._id,
-      isDelete: false, // Only count reviews that are not marked as deleted
-    }).session(session);
-    const updatedTotalRating = Math.max(0, movie.totalRating - 1);
-
-    // Update the movie's totalRating field with the new review count
+    // Update the movie's totalRating and viewCount
     await Movie.updateOne(
       { slug },
-      { totalRating: updatedTotalRating }, // Set totalRating to the new review count
+      {
+        $inc: {
+          viewCount: -1,
+          totalRating: -1, // Decrease total rating by 1
+        },
+      },
       { session: session }
     );
 
@@ -107,10 +118,11 @@ const deleteReviewIntoDB = async (slug: string, id: string) => {
 
     return result;
   } catch (error) {
-    console.log(error);
     await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
-  session.endSession();
 };
 
 export const reviewService = {

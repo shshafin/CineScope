@@ -15,6 +15,8 @@ const router = express_1.default.Router();
 router.post("/", (0, validateZodRequest_1.default)(movie_validation_1.movieValidation.movieValidationSchema), movie_controller_1.movieController.createMovie);
 router.get("/", movie_controller_1.movieController.getMovie);
 router.get("/:slug", movie_controller_1.movieController.getSingleMovie);
+router.patch("/:slug", (0, validateZodRequest_1.default)(movie_validation_1.movieValidation.movieUpdateValidationSchema), movie_controller_1.movieController.updateMovie);
+router.delete("/:slug", movie_controller_1.movieController.deleteMovie);
 // review routes
 router.post("/:slug/review", (0, validateZodRequest_1.default)(review_validation_1.reviewValidation.reviewValidationSchema), review_controller_1.reviewController.createReview);
 router.get("/:slug/review", review_controller_1.reviewController.getReview);

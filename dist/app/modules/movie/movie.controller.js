@@ -41,8 +41,31 @@ const getSingleMovie = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void
         data: result,
     });
 }));
+// update movie
+const updateMovie = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { slug } = req.params;
+    const movieData = req.body;
+    const result = yield movie_service_1.movieService.updateMovieIntoDB(slug, movieData);
+    res.status(200).json({
+        success: true,
+        message: "Movie updated successfully!",
+        data: result,
+    });
+}));
+// delete movie
+const deleteMovie = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { slug } = req.params;
+    const result = yield movie_service_1.movieService.deleteMovieIntoDB(slug);
+    res.status(200).json({
+        success: true,
+        message: "Movie deleted successfully!",
+        data: result,
+    });
+}));
 exports.movieController = {
     createMovie,
     getMovie,
     getSingleMovie,
+    updateMovie,
+    deleteMovie,
 };

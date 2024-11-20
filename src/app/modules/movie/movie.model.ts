@@ -24,4 +24,12 @@ movieSchema.pre("save", async function (next) {
   next();
 });
 
+movieSchema.pre("find", async function (next) {
+  this.find({ isDeleted: { $ne: true } } as mongoose.FilterQuery<TMovie>);
+  next();
+});
+movieSchema.pre("findOne", async function (next) {
+  this.findOne({ isDeleted: { $ne: true } } as mongoose.FilterQuery<TMovie>);
+  next();
+});
 export const Movie = mongoose.model<TMovie>("Movie", movieSchema);
