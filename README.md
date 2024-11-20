@@ -86,7 +86,7 @@ npm start</code></pre>
 
 <h2>Contact</h2>
 <ul>
-  <li>📧 <strong>Email:</strong> <a href="mailto:shafinsadnan08@gmail.com">shshafin@gmail.com</a></li>
+  <li>📧 <strong>Email:</strong> <a href="mailto:shafinsadnan08@gmail.com">shafinsadnan08@gmail.com</a></li>
   <li>🌐 <strong>LinkedIn:</strong> <a href="Your LinkedIn Profile Link">Your LinkedIn Profile Link</a></li>
   <li>📁 <strong>Portfolio:</strong> <a href="Your Portfolio Link">Your Portfolio Link</a></li>
 </ul>
