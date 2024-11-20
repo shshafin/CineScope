@@ -1,4 +1,4 @@
-CineScope 🎥
+<h1>CineScope 🎥</h1>
 Crafting a Comprehensive Movie Rating Platform
 
 Overview
