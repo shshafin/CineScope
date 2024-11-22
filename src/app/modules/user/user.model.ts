@@ -1,6 +1,8 @@
 import { model, Schema } from "mongoose";
 import { TUser } from "./user.interface";
 import { USER_Role, USER_STATUS } from "./user.const";
+import bcryptjs from "bcryptjs";
+import config from "../../config";
 
 const userSchema = new Schema<TUser>({
   name: {
@@ -20,7 +22,6 @@ const userSchema = new Schema<TUser>({
   password: {
     type: String,
     required: [true, "Password is required"],
-    select: 0,
   },
   status: {
     type: String,
@@ -31,6 +32,23 @@ const userSchema = new Schema<TUser>({
   passwordChangedAt: {
     type: Date,
   },
+});
+
+// password hashing pre hook middleware
+userSchema.pre("save", async function (next) {
+  this.password = await bcryptjs.hash(
+    this.password,
+    Number(config.salt_rounds)
+  );
+
+  next();
+});
+
+// password hide post hook middleware
+userSchema.post("save", function (doc, next) {
+  doc.password = "";
+
+  next();
 });
 
 export const User = model<TUser>("User", userSchema);

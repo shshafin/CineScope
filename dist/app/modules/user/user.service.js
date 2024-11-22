@@ -16,6 +16,12 @@ const createUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function
     const result = yield user_model_1.User.create(payload);
     return result;
 });
+// !update user
+const updateUserIntoDB = (_id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.User.findByIdAndUpdate({ _id }, payload);
+    return result;
+});
 exports.userService = {
     createUserIntoDB,
+    updateUserIntoDB,
 };

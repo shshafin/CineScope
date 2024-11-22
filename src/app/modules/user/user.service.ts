@@ -7,6 +7,13 @@ const createUserIntoDB = async (payload: TUser) => {
   return result;
 };
 
+// !update user
+const updateUserIntoDB = async (_id: string, payload: TUser) => {
+  const result = await User.findByIdAndUpdate({ _id }, payload);
+  return result;
+};
+
 export const userService = {
   createUserIntoDB,
+  updateUserIntoDB,
 };
