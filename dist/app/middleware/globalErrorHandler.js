@@ -12,59 +12,67 @@ const AppError_1 = __importDefault(require("../../errors/AppError"));
 const config_1 = __importDefault(require("../config"));
 const globalErrorHandler = (err, req, res, next) => {
     let statusCode = 500;
-    let message = "something went wrong";
+    let message = "Something went wrong.";
     let errorSources = [
         {
             path: "",
-            message: "something went wrong",
+            message: "An unknown error occurred.",
         },
     ];
-    // mongoose error
     if (err.name === "ValidationError") {
+        // Mongoose validation error
         const simplified = (0, handleValidationError_1.default)(err);
+        statusCode = 400;
+        message = simplified.message;
         errorSources = simplified.errorSource;
     }
     else if (err.name === "CastError") {
+        // Mongoose cast error
         const simplified = (0, handleCastError_1.default)(err);
+        statusCode = 400;
+        message = simplified.message;
         errorSources = simplified.errorSource;
     }
-    else if (err.name === 11000) {
+    else if (err.code === 11000) {
+        // MongoDB duplicate key error
         const simplified = (0, handleDuplicateError_1.default)(err);
+        statusCode = 409;
         errorSources = simplified.errorSource;
     }
-    // zod error
-    if (err instanceof zod_1.ZodError) {
-        const handleError = (0, handleZodError_1.default)(err);
-        statusCode = handleError.statusCode;
-        message = handleError.message;
-        errorSources = handleError.errorSource;
+    else if (err instanceof zod_1.ZodError) {
+        // Zod validation error
+        const simplified = (0, handleZodError_1.default)(err);
+        statusCode = simplified.statusCode || 400;
+        message = simplified.message;
+        errorSources = simplified.errorSource;
     }
-    // AppError
-    if (err instanceof AppError_1.default) {
-        statusCode = err === null || err === void 0 ? void 0 : err.statusCode;
-        message = err === null || err === void 0 ? void 0 : err.message;
+    else if (err instanceof AppError_1.default) {
+        // Custom application error
+        statusCode = err.statusCode || 400;
+        message = err.message;
         errorSources = [
             {
                 path: "",
-                message: err === null || err === void 0 ? void 0 : err.message,
+                message: err.message,
             },
         ];
     }
-    // Error
-    if (err instanceof Error) {
-        message = err === null || err === void 0 ? void 0 : err.message;
+    else if (err instanceof Error) {
+        // Generic JavaScript error
+        message = err.message;
         errorSources = [
             {
                 path: "",
-                message: err === null || err === void 0 ? void 0 : err.message,
+                message: err.message,
             },
         ];
     }
+    // Send response
     res.status(statusCode).json({
         success: false,
-        message: (err === null || err === void 0 ? void 0 : err.message) || message,
+        message,
         errorSources,
-        stack: (config_1.default === null || config_1.default === void 0 ? void 0 : config_1.default.NODE_ENV) === "development" ? err === null || err === void 0 ? void 0 : err.stack : null,
+        stack: config_1.default.NODE_ENV === "development" ? err.stack : null, // Only show stack in development mode
     });
 };
 exports.default = globalErrorHandler;

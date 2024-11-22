@@ -9,17 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const catchAsync_1 = require("../utils/catchAsync");
-const validateZodRequest = (Schema) => {
-    return (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const parsedBody = yield Schema.parseAsync(req.body);
-            req.body = parsedBody.body;
-            next();
-        }
-        catch (err) {
-            next(err);
-        }
-    }));
+exports.userController = void 0;
+const catchAsync_1 = require("../../utils/catchAsync");
+const user_service_1 = require("./user.service");
+// !create user
+const createUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_service_1.userService.createUserIntoDB(req.body);
+    res.status(200).json({
+        success: true,
+        message: "User created successfully",
+        data: result,
+    });
+}));
+exports.userController = {
+    createUser,
 };
-exports.default = validateZodRequest;
