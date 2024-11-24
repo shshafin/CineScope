@@ -1,6 +1,4 @@
-import AppError from "../../../errors/AppError";
 import { catchAsync } from "../../utils/catchAsync";
-import { USER_Role } from "./user.const";
 import { userService } from "./user.service";
 
 // !create user

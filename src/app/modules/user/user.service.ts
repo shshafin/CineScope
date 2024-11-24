@@ -22,7 +22,6 @@ const updateMeIntoDB = async (email: string, payload: Partial<TUser>) => {
     throw new AppError(404, "User not found");
   }
 
-  console.log(updatedUser);
   return updatedUser;
 };
 

@@ -31,7 +31,6 @@ const updateMeIntoDB = (email, payload) => __awaiter(void 0, void 0, void 0, fun
     if (!updatedUser) {
         throw new AppError_1.default(404, "User not found");
     }
-    console.log(updatedUser);
     return updatedUser;
 });
 exports.userService = {
