@@ -8,14 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const catchAsync_1 = require("../utils/catchAsync");
-const validateZodRequest = (Schema) => {
-    return (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
-        const parsedBody = yield Schema.parseAsync(req.body);
-        req.body = (_a = parsedBody.body) !== null && _a !== void 0 ? _a : parsedBody;
-        next();
-    }));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-exports.default = validateZodRequest;
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isPasswordMatched = void 0;
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const isPasswordMatched = (plainPassword, hashedPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    const isMatched = yield bcryptjs_1.default.compare(plainPassword, hashedPassword);
+    return isMatched;
+});
+exports.isPasswordMatched = isPasswordMatched;

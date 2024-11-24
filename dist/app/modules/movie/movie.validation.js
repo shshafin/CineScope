@@ -9,7 +9,7 @@ const movieValidationSchema = zod_1.z.object({
     releaseDate: zod_1.z
         .string()
         .date("Please provide a valid date in this format yyyy-MM-dd"),
-    genre: zod_1.z.string(),
+    genre: zod_1.z.string().min(1, "please add genre"),
     isDeleted: zod_1.z.boolean().default(false),
 });
 // Movie Validation Schema for Update (Optional fields)

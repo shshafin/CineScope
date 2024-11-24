@@ -1,8 +1,9 @@
+import AppError from "../../../errors/AppError";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
 
 // !create user
-const createUserIntoDB = async (payload: TUser) => {
+const createAdminIntoDB = async (payload: TUser) => {
   const result = await User.create(payload);
   return result;
 };
@@ -13,7 +14,20 @@ const updateUserIntoDB = async (_id: string, payload: TUser) => {
   return result;
 };
 
+// !update me
+const updateMeIntoDB = async (email: string, payload: Partial<TUser>) => {
+  const updatedUser = await User.findOneAndUpdate({ email }, payload);
+
+  if (!updatedUser) {
+    throw new AppError(404, "User not found");
+  }
+
+  console.log(updatedUser);
+  return updatedUser;
+};
+
 export const userService = {
-  createUserIntoDB,
+  createAdminIntoDB,
   updateUserIntoDB,
+  updateMeIntoDB,
 };

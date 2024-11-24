@@ -1,13 +1,15 @@
+import AppError from "../../../errors/AppError";
 import { catchAsync } from "../../utils/catchAsync";
+import { USER_Role } from "./user.const";
 import { userService } from "./user.service";
 
 // !create user
-const createUser = catchAsync(async (req, res) => {
-  const result = await userService.createUserIntoDB(req.body);
+const createAdmin = catchAsync(async (req, res) => {
+  const result = await userService.createAdminIntoDB(req.body);
 
   res.status(200).json({
     success: true,
-    message: "User created successfully",
+    message: "Admin created successfully",
     data: result,
   });
 });
@@ -24,7 +26,23 @@ const updateUser = catchAsync(async (req, res) => {
   });
 });
 
+// !update me
+const updateMe = catchAsync(async (req, res) => {
+  const userEmail = (req as any).user.email; // Get the user's ID from the request
+  const payload = req.body; // Get the update data from the request body
+
+  const updatedUser = await userService.updateMeIntoDB(userEmail, payload);
+
+  if (updatedUser) {
+    res.status(200).json({
+      success: true,
+      data: updatedUser,
+    });
+  }
+});
+
 export const userController = {
-  createUser,
+  createAdmin,
   updateUser,
+  updateMe,
 };

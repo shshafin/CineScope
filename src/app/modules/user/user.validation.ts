@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { USER_Role, USER_STATUS } from "./user.const";
 
-const userValidationSchema = z.object({
+const createAdminValidationSchema = z.object({
   body: z.object({
     name: z.string(),
     role: z.nativeEnum(USER_Role).default(USER_Role.ADMIN),
@@ -20,6 +20,6 @@ const updateUserValidationSchema = z.object({
 });
 
 export const userValidation = {
-  userValidationSchema,
+  createAdminValidationSchema,
   updateUserValidationSchema,
 };

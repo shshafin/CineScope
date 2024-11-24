@@ -7,7 +7,7 @@ const movieValidationSchema = z.object({
   releaseDate: z
     .string()
     .date("Please provide a valid date in this format yyyy-MM-dd"),
-  genre: z.string(),
+  genre: z.string().min(1, "please add genre"),
   isDeleted: z.boolean().default(false),
 });
 

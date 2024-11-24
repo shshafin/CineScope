@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userValidation = void 0;
 const zod_1 = require("zod");
 const user_const_1 = require("./user.const");
-const userValidationSchema = zod_1.z.object({
+const createAdminValidationSchema = zod_1.z.object({
     body: zod_1.z.object({
         name: zod_1.z.string(),
         role: zod_1.z.nativeEnum(user_const_1.USER_Role).default(user_const_1.USER_Role.ADMIN),
@@ -20,6 +20,6 @@ const updateUserValidationSchema = zod_1.z.object({
     }),
 });
 exports.userValidation = {
-    userValidationSchema,
+    createAdminValidationSchema,
     updateUserValidationSchema,
 };

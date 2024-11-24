@@ -13,11 +13,11 @@ exports.userController = void 0;
 const catchAsync_1 = require("../../utils/catchAsync");
 const user_service_1 = require("./user.service");
 // !create user
-const createUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_service_1.userService.createUserIntoDB(req.body);
+const createAdmin = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_service_1.userService.createAdminIntoDB(req.body);
     res.status(200).json({
         success: true,
-        message: "User created successfully",
+        message: "Admin created successfully",
         data: result,
     });
 }));
@@ -31,7 +31,20 @@ const updateUser = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+// !update me
+const updateMe = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userEmail = req.user.email; // Get the user's ID from the request
+    const payload = req.body; // Get the update data from the request body
+    const updatedUser = yield user_service_1.userService.updateMeIntoDB(userEmail, payload);
+    if (updatedUser) {
+        res.status(200).json({
+            success: true,
+            data: updatedUser,
+        });
+    }
+}));
 exports.userController = {
-    createUser,
+    createAdmin,
     updateUser,
+    updateMe,
 };

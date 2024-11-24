@@ -8,9 +8,13 @@ const express_1 = __importDefault(require("express"));
 const validateZodRequest_1 = __importDefault(require("../../middleware/validateZodRequest"));
 const user_validation_1 = require("./user.validation");
 const user_controller_1 = require("./user.controller");
+const user_const_1 = require("./user.const");
+const auth_1 = require("../../middleware/auth");
 const router = express_1.default.Router();
 // create
-router.post("/create-admin", (0, validateZodRequest_1.default)(user_validation_1.userValidation.userValidationSchema), user_controller_1.userController.createUser);
+router.post("/create-admin", (0, validateZodRequest_1.default)(user_validation_1.userValidation.createAdminValidationSchema), (0, auth_1.auth)(user_const_1.USER_Role.ADMIN, user_const_1.USER_Role.SUPER_ADMIN), user_controller_1.userController.createAdmin);
+// update me
+router.put("/me", (0, validateZodRequest_1.default)(user_validation_1.userValidation.updateUserValidationSchema), (0, auth_1.auth)(user_const_1.USER_Role.USER), user_controller_1.userController.updateMe);
 // update
-router.put("/:userId", (0, validateZodRequest_1.default)(user_validation_1.userValidation.updateUserValidationSchema), user_controller_1.userController.updateUser);
+router.put("/:userId", (0, validateZodRequest_1.default)(user_validation_1.userValidation.updateUserValidationSchema), (0, auth_1.auth)(user_const_1.USER_Role.ADMIN, user_const_1.USER_Role.SUPER_ADMIN), user_controller_1.userController.updateUser);
 exports.userRoute = router;
